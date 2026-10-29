@@ -1,0 +1,196 @@
+/* =====================================================
+   styles.css — Estilos globales de ChefApp
+   Mobile-first: el diseño base es para celular y se
+   amplía con media queries para tablet y escritorio.
+   ===================================================== */
+
+/* ---------- 1. Variables (identidad visual única) ---------- */
+:root {
+  --color-primario: #c2410c;      /* naranja quemado: contraste AA con texto blanco */
+  --color-primario-oscuro: #9a3412;
+  --color-secundario: #365314;    /* verde oliva */
+  --color-fondo: #fffaf5;
+  --color-superficie: #ffffff;
+  --color-texto: #1f2933;
+  --color-texto-suave: #52606d;
+  --color-borde: #e4d9cf;
+  --color-exito: #166534;
+  --color-error: #b91c1c;
+  --color-aviso: #92400e;
+  --radio: 12px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --fuente: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+
+/* ---------- 2. Reset y base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;       /* el footer queda abajo aunque haya poco contenido */
+}
+main { flex: 1; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { line-height: 1.25; margin: 0 0 0.5rem; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; color: var(--color-secundario); }
+h3 { font-size: 1.15rem; }
+a { color: var(--color-primario-oscuro); }
+:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; } /* accesibilidad teclado */
+
+.contenedor { width: min(1100px, 92%); margin-inline: auto; }
+.seccion { padding: 2.5rem 0; }
+.seccion__intro { color: var(--color-texto-suave); max-width: 60ch; }
+
+/* ---------- 3. Header y navegación ---------- */
+.encabezado {
+  position: sticky; top: 0; z-index: 50;   /* siempre visible */
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
+  box-shadow: var(--sombra);
+}
+.encabezado__barra {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0; flex-wrap: wrap; gap: 0.5rem;
+}
+.logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
+        font-weight: 700; font-size: 1.3rem; color: var(--color-primario-oscuro); }
+.logo img { width: 36px; height: 36px; }
+
+.menu-boton {
+  background: none; border: 2px solid var(--color-borde); border-radius: 8px;
+  font-size: 1.3rem; padding: 0.2rem 0.6rem; cursor: pointer;
+}
+.nav-envoltorio { width: 100%; }
+.menu { display: none; width: 100%; list-style: none; margin: 0; padding: 0; }
+.menu.abierto { display: block; }
+.menu a {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+  padding: 0.7rem 0.5rem; text-decoration: none; color: var(--color-texto);
+  border-radius: 8px; font-weight: 600;
+}
+.menu a:hover { background: #fdeee3; }
+.menu a.activo { background: var(--color-primario); color: #fff; }  /* página activa */
+.insignia {
+  background: var(--color-secundario); color: #fff; border-radius: 999px;
+  padding: 0 0.55rem; font-size: 0.8rem;
+}
+
+/* ---------- 4. Botones ---------- */
+.btn {
+  display: inline-block; border: 2px solid transparent; border-radius: 999px;
+  padding: 0.6rem 1.3rem; font-size: 1rem; font-weight: 700; cursor: pointer;
+  text-decoration: none; text-align: center; font-family: inherit;
+  background: var(--color-primario); color: #fff;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn:hover { background: var(--color-primario-oscuro); }
+.btn:active { transform: scale(0.97); }
+.btn--secundario { background: transparent; color: var(--color-primario-oscuro); border-color: var(--color-primario); }
+.btn--secundario:hover { background: #fdeee3; }
+.btn--peligro { background: var(--color-error); }
+.btn--peligro:hover { background: #991b1b; }
+.btn--fav { width: 100%; margin-top: 0.5rem; background: #fff; color: var(--color-primario-oscuro); border-color: var(--color-primario); }
+.btn--fav.activo { background: var(--color-primario); color: #fff; }
+
+/* ---------- 5. Hero ---------- */
+.hero {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 45%, #c2410c 100%);
+  color: #fff; padding: 3.5rem 0; text-align: center;
+}
+.hero h1 { font-size: 2.2rem; text-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+.hero p { max-width: 55ch; margin: 0.5rem auto 1.5rem; font-size: 1.1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+.hero .btn { background: #fff; color: var(--color-primario-oscuro); }
+.hero .btn:hover { background: #ffedd5; }
+
+/* ---------- 6. Rejillas (Grid) y tarjetas ---------- */
+.rejilla { display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
+.tarjeta {
+  background: var(--color-superficie); border: 1px solid var(--color-borde);
+  border-radius: var(--radio); overflow: hidden; box-shadow: var(--sombra);
+  display: flex; flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.tarjeta:hover { transform: translateY(-4px); box-shadow: 0 8px 18px rgba(0,0,0,0.12); }
+.tarjeta img { width: 100%; height: 170px; object-fit: cover; }
+.tarjeta__cuerpo { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+.tarjeta__cuerpo p { margin: 0 0 0.5rem; color: var(--color-texto-suave); }
+.tarjeta__meta { font-size: 0.9rem; font-weight: 600; }
+.tarjeta__cuerpo .btn--fav { margin-top: auto; }
+.etiqueta {
+  align-self: flex-start; background: #ecfccb; color: var(--color-secundario);
+  border-radius: 999px; padding: 0.1rem 0.7rem; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem;
+}
+
+/* Tarjetas de información (problema / público / solución) */
+.info { background: var(--color-superficie); border: 1px solid var(--color-borde);
+        border-radius: var(--radio); padding: 1.3rem; box-shadow: var(--sombra); }
+.info__icono { font-size: 2rem; }
+
+/* Estadísticas */
+.estadisticas { display: grid; gap: 1rem; grid-template-columns: repeat(3, 1fr); text-align: center; }
+.estadistica { background: var(--color-secundario); color: #fff; border-radius: var(--radio); padding: 1rem 0.5rem; }
+.estadistica strong { display: block; font-size: 2rem; }
+
+/* Bloque "¿Qué cocino hoy?" */
+.azar { background: #fff7ed; border: 2px dashed var(--color-primario); border-radius: var(--radio);
+        padding: 1.5rem; text-align: center; }
+.azar #resultado-azar { margin-top: 1rem; min-height: 2rem; }
+
+/* ---------- 7. Mensajes, formularios y toasts (se usarán en fases siguientes) ---------- */
+.mensaje { padding: 0.8rem 1rem; border-radius: 8px; font-weight: 600; }
+.mensaje--error { background: #fee2e2; color: var(--color-error); }
+.mensaje--vacio { background: #f1f5f9; color: var(--color-texto-suave); text-align: center; }
+
+label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+input, select, textarea {
+  width: 100%; padding: 0.6rem 0.8rem; font-size: 1rem; font-family: inherit;
+  border: 2px solid var(--color-borde); border-radius: 8px; background: #fff;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--color-primario); }
+.campo { margin-bottom: 1rem; }
+.campo__error { color: var(--color-error); font-size: 0.9rem; min-height: 1.2rem; margin: 0.2rem 0 0; }
+input.invalido, select.invalido, textarea.invalido { border-color: var(--color-error); }
+input.valido, select.valido, textarea.valido { border-color: var(--color-exito); }
+
+#toast-contenedor { position: fixed; bottom: 1rem; right: 1rem; left: 1rem; z-index: 100;
+                    display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+.toast { color: #fff; padding: 0.7rem 1.1rem; border-radius: 8px; font-weight: 600;
+         box-shadow: 0 4px 12px rgba(0,0,0,0.25); animation: entrar 0.25s ease; }
+.toast--exito { background: var(--color-exito); }
+.toast--error { background: var(--color-error); }
+.toast--aviso { background: var(--color-aviso); }
+@keyframes entrar { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 8. Footer ---------- */
+.pie { background: #1f2933; color: #e5e7eb; padding: 1.5rem 0; text-align: center; margin-top: 2rem; }
+.pie a { color: #fdba74; }
+
+/* ---------- 9. Media queries (responsive) ---------- */
+/* Tablet */
+@media (min-width: 640px) {
+  .rejilla { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 2.8rem; }
+}
+/* Escritorio */
+@media (min-width: 900px) {
+  .menu-boton { display: none; }
+  .nav-envoltorio { width: auto; }
+  .menu { display: flex; width: auto; gap: 0.3rem; }
+  .menu a { padding: 0.5rem 1rem; }
+  .rejilla { grid-template-columns: repeat(3, 1fr); }
+  .rejilla--info { grid-template-columns: repeat(3, 1fr); }
+  #toast-contenedor { left: auto; }
+}
+@media (min-width: 1100px) {
+  .rejilla--destacadas { grid-template-columns: repeat(4, 1fr); }
+}
+/* Respeta a usuarios que prefieren menos animación */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
