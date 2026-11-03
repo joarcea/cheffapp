@@ -30,7 +30,8 @@
   <main class="contenedor seccion">
     <h1>Catálogo de recetas</h1>
     <p class="seccion__intro">
-      <strong>Paso 1:</strong> busca o filtra. <strong>Paso 2:</strong> abre una receta para ver los pasos.
+      <strong>Paso 1:</strong> busca, filtra por cocina o marca lo que tienes en casa.
+      <strong>Paso 2:</strong> abre una receta para ver los pasos.
       <strong>Paso 3:</strong> guárdala en favoritos.
     </p>
 
@@ -46,6 +47,13 @@
       <div class="campo">
         <label for="filtro-categoria">Categoría</label>
         <select id="filtro-categoria">
+          <option value="">Todas</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="filtro-cocina">Cocina del mundo</label>
+        <select id="filtro-cocina">
           <option value="">Todas</option>
         </select>
       </div>
@@ -72,6 +80,42 @@
 
       <div class="campo campo--accion">
         <button type="button" id="btn-limpiar-filtros" class="btn btn--secundario">Limpiar filtros</button>
+      </div>
+    </section>
+
+    <!-- DESPENSA: ¿QUÉ TIENES EN CASA? -->
+    <section class="despensa" aria-labelledby="titulo-despensa">
+      <h2 id="titulo-despensa">¿Qué tienes en casa?</h2>
+      <p class="seccion__intro">
+        Marca los ingredientes que tienes y te mostramos qué puedes cocinar, empezando por las recetas
+        a las que les falta menos. Damos por hecho que tienes sal, pimienta, agua, aceite y hielo.
+      </p>
+
+      <div id="despensa-elegidos" class="chips" aria-live="polite"></div>
+
+      <details class="despensa__panel" open>
+        <summary>Elegir ingredientes</summary>
+        <div class="campo">
+          <label for="buscar-ingrediente">Buscar ingrediente</label>
+          <input type="search" id="buscar-ingrediente" placeholder="Ej: tomate, pollo, arroz…" autocomplete="off">
+        </div>
+        <fieldset class="despensa__lista">
+          <legend>Ingredientes disponibles (entre paréntesis, en cuántas recetas se usan)</legend>
+          <ul id="lista-ingredientes" class="ingredientes"></ul>
+        </fieldset>
+      </details>
+
+      <div class="despensa__controles">
+        <div class="campo">
+          <label for="filtro-faltantes">Cuánto me puede faltar</label>
+          <select id="filtro-faltantes" disabled>
+            <option value="todas">Cualquier cantidad (las más cocinables primero)</option>
+            <option value="2">Máximo 2 ingredientes</option>
+            <option value="1">Máximo 1 ingrediente</option>
+            <option value="0">Nada: puedo cocinarla ya</option>
+          </select>
+        </div>
+        <button type="button" id="btn-limpiar-despensa" class="btn btn--secundario" disabled>Quitar todos los ingredientes</button>
       </div>
     </section>
 

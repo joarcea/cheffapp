@@ -10,14 +10,16 @@ Buscar recetas en muchos sitios con publicidad excesiva y sin filtros simples ha
 sobre todo a estudiantes y personas con poco tiempo disponible.
 
 ## Solución
-ChefApp reúne las recetas en un catálogo con búsqueda instantánea y filtros, muestra ingredientes y
-pasos, y permite guardar favoritos y registrar recetas propias. Todo se conserva en el navegador.
+ChefApp reúne 40 recetas de 17 cocinas del mundo en un catálogo con búsqueda instantánea y filtros
+(categoría, cocina, dificultad y tiempo). Además, el usuario marca los ingredientes que tiene en casa y
+la app muestra qué puede cocinar y qué le falta. Permite guardar favoritos y registrar recetas propias.
+Todo se conserva en el navegador (localStorage).
 
 ## Páginas
 | Página | Función |
 |---|---|
-| `index.html` | Inicio: problema, público, solución, recetas populares (desde JSON) y "Sorpréndeme" |
-| `recetas.html` | Solución interactiva: búsqueda en tiempo real, filtros combinados, detalle y favoritos |
+| `index.html` | Inicio: problema, público, solución, estadísticas, explorar por cocina, populares (desde JSON) y "Sorpréndeme" |
+| `recetas.html` | Solución interactiva: búsqueda en tiempo real, filtros combinados, "¿Qué tienes en casa?", detalle y favoritos |
 | `favoritos.html` | Registro o gestión: formulario validado, favoritos, estado "probada", eliminar y limpiar |
 
 ## Tecnologías

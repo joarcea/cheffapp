@@ -33,7 +33,7 @@
     <section class="hero" aria-labelledby="titulo-hero">
       <div class="contenedor">
         <h1 id="titulo-hero">Cocinar fácil empieza aquí</h1>
-        <p>Encuentra recetas claras, sin publicidad y guarda tus favoritas para tenerlas siempre a mano.</p>
+        <p>Recetas de todo el mundo, claras y sin publicidad. Dinos qué tienes en casa y te mostramos qué cocinar.</p>
         <a href="recetas.html" class="btn">Explorar recetas</a>
       </div>
     </section>
@@ -66,11 +66,20 @@
 
     <!-- ESTADÍSTICAS (calculadas con JS desde el JSON) -->
     <section class="seccion contenedor" aria-label="Estadísticas del catálogo">
-      <div class="estadisticas">
+      <div class="estadisticas estadisticas--4">
         <div class="estadistica"><strong id="stat-total">–</strong> recetas</div>
+        <div class="estadistica"><strong id="stat-cocinas">–</strong> cocinas del mundo</div>
         <div class="estadistica"><strong id="stat-categorias">–</strong> categorías</div>
         <div class="estadistica"><strong id="stat-rapidas">–</strong> de 20 min o menos</div>
       </div>
+    </section>
+
+    <!-- EXPLORAR POR COCINA (se genera desde recetas.json) -->
+    <section class="seccion contenedor" aria-labelledby="titulo-cocinas">
+      <h2 id="titulo-cocinas">Explora por cocina del mundo</h2>
+      <p class="seccion__intro">Elige una cocina y ve solo sus recetas. En el catálogo también puedes marcar
+         los ingredientes que tienes en casa para saber qué cocinar.</p>
+      <div id="lista-cocinas" class="chips-cocina"></div>
     </section>
 
     <!-- RECETAS DESTACADAS (se generan desde recetas.json) -->
@@ -101,6 +110,7 @@
 
   <!-- Orden importante: storage.js primero, porque app.js lo usa -->
   <script src="js/storage.js"></script>
+  <script src="js/filtros.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

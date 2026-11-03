@@ -9,6 +9,7 @@ const ChefStorage = (() => {
   const CLAVE_FAVORITOS = "chefapp_favoritos";
   const CLAVE_USUARIO = "chefapp_recetas_usuario";
   const CLAVE_PROBADAS = "chefapp_probadas";
+  const CLAVE_DESPENSA = "chefapp_despensa";
 
   // Lee y convierte JSON de forma segura (si está corrupto, devuelve el valor por defecto)
   function leer(clave, porDefecto) {
@@ -105,6 +106,24 @@ const ChefStorage = (() => {
     return posicion === -1;
   }
 
+  /* ---------- DESPENSA: ingredientes que el usuario tiene en casa (arreglo de textos) ---------- */
+  function obtenerDespensa() {
+    return leer(CLAVE_DESPENSA, []);
+  }
+
+  // Agrega o quita un ingrediente. Devuelve true si quedó en la despensa.
+  function alternarDespensa(ingrediente) {
+    const lista = obtenerDespensa();
+    const posicion = lista.indexOf(ingrediente);
+    if (posicion === -1) lista.push(ingrediente); else lista.splice(posicion, 1);
+    guardar(CLAVE_DESPENSA, lista);
+    return posicion === -1;
+  }
+
+  function limpiarDespensa() {
+    guardar(CLAVE_DESPENSA, []);
+  }
+
   // Genera un id único para recetas nuevas (el JSON usa 1..12; las del usuario empiezan en 1000)
   function generarId() {
     const ids = obtenerRecetasUsuario().map((r) => r.id);
@@ -115,5 +134,6 @@ const ChefStorage = (() => {
     obtenerFavoritos, esFavorito, alternarFavorito, eliminarFavorito, limpiarFavoritos,
     obtenerRecetasUsuario, agregarRecetaUsuario, eliminarRecetaUsuario, limpiarRecetasUsuario, generarId,
     obtenerProbadas, esProbada, alternarProbada,
+    obtenerDespensa, alternarDespensa, limpiarDespensa,
   };
 })();
