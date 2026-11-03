@@ -67,6 +67,7 @@ function reglasCampos() {
   return {
     nombre: (v) => ChefValidar.nombre(v, todasLasRecetas.map((r) => r.nombre)),
     categoria: (v) => ChefValidar.seleccion(v, "una categoría"),
+    cocina: (v) => ChefValidar.seleccion(v, "una cocina"),
     dificultad: (v) => ChefValidar.seleccion(v, "una dificultad"),
     tiempo: (v) => ChefValidar.tiempo(v),
     descripcion: (v) => ChefValidar.descripcion(v),
@@ -131,6 +132,7 @@ function manejarEnvio(evento) {
     id: ChefStorage.generarId(),
     nombre: el.nombre.value.trim(),
     categoria: el.categoria.value,
+    cocina: el.cocina.value,
     ingredientes: ChefValidar.aLineas(el.ingredientes.value),
     tiempo: Number(el.tiempo.value),
     dificultad: el.dificultad.value,
@@ -145,7 +147,8 @@ function manejarEnvio(evento) {
     return;
   }
 
-  todasLasRecetas.push(receta);
+  // completarReceta deduce los ingredientes clave (para el filtro "¿Qué tienes en casa?")
+  todasLasRecetas.push(completarReceta(receta));
   limpiarFormulario();
   mostrarToast(`Receta «${receta.nombre}» guardada correctamente`, "exito");
   renderizarTodo();
@@ -192,7 +195,10 @@ function crearTarjetaGestion(r, tipo) {
   articulo.innerHTML = `
     <img src="${escaparHTML(r.imagen)}" alt="Imagen de ${escaparHTML(r.nombre)}" loading="lazy">
     <div class="tarjeta__cuerpo">
-      <div class="etiquetas"><span class="etiqueta">${escaparHTML(r.categoria)}</span>${insigniaProbada}</div>
+      <div class="etiquetas">
+        <span class="etiqueta">${escaparHTML(r.categoria)}</span>
+        <span class="etiqueta etiqueta--cocina">${escaparHTML(r.cocina)}</span>${insigniaProbada}
+      </div>
       <h3>${escaparHTML(r.nombre)}</h3>
       <p>${escaparHTML(r.descripcion)}</p>
       <p class="tarjeta__meta">⏱ ${r.tiempo} min · ${escaparHTML(r.dificultad)}</p>
@@ -302,7 +308,7 @@ async function iniciarGestion() {
   const porId = (id) => document.getElementById(id);
   el = {
     formulario: porId("formulario-receta"), resumenErrores: porId("resumen-errores"),
-    nombre: porId("nombre"), categoria: porId("categoria"), dificultad: porId("dificultad"),
+    nombre: porId("nombre"), categoria: porId("categoria"), cocina: porId("cocina"), dificultad: porId("dificultad"),
     tiempo: porId("tiempo"), descripcion: porId("descripcion"), contador: porId("contador"),
     ingredientes: porId("ingredientes"), pasos: porId("pasos"),
     btnLimpiarForm: porId("btn-limpiar-form"),
@@ -322,12 +328,14 @@ async function iniciarGestion() {
     return;
   }
 
-  // Categorías del formulario: salen del JSON, no están escritas a mano
-  ChefFiltros.obtenerCategorias(todasLasRecetas).forEach((cat) => {
-    const op = document.createElement("option");
-    op.value = cat; op.textContent = cat;
-    el.categoria.appendChild(op);
-  });
+  // Categorías y cocinas del formulario: salen del JSON, no están escritas a mano
+  [[el.categoria, ChefFiltros.obtenerCategorias(todasLasRecetas)],
+   [el.cocina, ChefFiltros.obtenerCocinas(todasLasRecetas).filter((c) => c !== "Otra")]]
+    .forEach(([select, valores]) => valores.forEach((valor) => {
+      const op = document.createElement("option");
+      op.value = valor; op.textContent = valor;
+      select.appendChild(op);
+    }));
 
   // Validación en tiempo real: input (texto) y change (selects); blur marca campos vacíos al salir
   Object.keys(reglasCampos()).forEach((id) => {

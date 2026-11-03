@@ -1,10 +1,21 @@
 /* =====================================================
    app.js — Código compartido por TODAS las páginas
    + lógica de la página de inicio (index.html)
-   Requiere cargar antes: storage.js
+   Requiere cargar antes: storage.js y filtros.js
    ===================================================== */
 
 /* ---------- 1. UTILIDADES COMPARTIDAS ---------- */
+
+// Completa los datos que puedan faltar (recetas guardadas por versiones anteriores del formulario)
+function completarReceta(receta) {
+  const copia = Object.assign({}, receta);
+  if (!copia.cocina) copia.cocina = "Otra";
+  if (!copia.ingredientesClave || copia.ingredientesClave.length === 0) {
+    copia.ingredientesClave = ChefFiltros.derivarClaves(copia.ingredientes || []);
+    copia.clavesAprox = true; // marca: claves deducidas automáticamente (comparación flexible)
+  }
+  return copia;
+}
 
 // Carga recetas del JSON y les suma las creadas por el usuario
 async function cargarRecetas() {
@@ -13,14 +24,18 @@ async function cargarRecetas() {
     throw new Error("No se pudo cargar recetas.json (código " + respuesta.status + ")");
   }
   const base = await respuesta.json();
-  return base.concat(ChefStorage.obtenerRecetasUsuario());
+  return base.concat(ChefStorage.obtenerRecetasUsuario()).map(completarReceta);
 }
 
-// Evita que texto escrito por el usuario inyecte HTML (seguridad básica XSS)
+// Evita que texto escrito por el usuario inyecte HTML (seguridad básica XSS).
+// Escapa también las comillas, para que sea seguro dentro de atributos como alt="...".
 function escaparHTML(texto) {
-  const div = document.createElement("div");
-  div.textContent = String(texto);
-  return div.innerHTML;
+  return String(texto)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 // Mensaje flotante (toast) para retroalimentación visual. tipo: exito | error | aviso
@@ -39,19 +54,34 @@ function mostrarToast(mensaje, tipo = "exito") {
   setTimeout(() => toast.remove(), 3000);
 }
 
-// Crea la tarjeta HTML de una receta (la reutilizan inicio, recetas y favoritos)
-function crearTarjetaReceta(receta, conDetalle = false) {
+/* Crea la tarjeta HTML de una receta (la reutilizan inicio, recetas y favoritos).
+   conDetalle: agrega el botón "Ver ingredientes y pasos".
+   despensa:   { total, tiene, faltantes } cuando hay ingredientes elegidos (si no, null). */
+function crearTarjetaReceta(receta, conDetalle = false, despensa = null) {
   const articulo = document.createElement("article");
   articulo.className = "tarjeta";
   articulo.dataset.id = receta.id;
   const esFav = ChefStorage.esFavorito(receta.id);
+
+  let infoDespensa = "";
+  if (despensa) {
+    infoDespensa = despensa.faltantes.length === 0
+      ? '<p class="despensa-info despensa-info--ok">✔ Puedes cocinarla con lo que tienes</p>'
+      : `<p class="despensa-info">Tienes ${despensa.tiene} de ${despensa.total} ingredientes · ` +
+        `Te falta: ${escaparHTML(despensa.faltantes.join(", "))}</p>`;
+  }
+
   articulo.innerHTML = `
     <img src="${escaparHTML(receta.imagen)}" alt="Imagen de ${escaparHTML(receta.nombre)}" loading="lazy">
     <div class="tarjeta__cuerpo">
-      <span class="etiqueta">${escaparHTML(receta.categoria)}</span>
+      <div class="etiquetas">
+        <span class="etiqueta">${escaparHTML(receta.categoria)}</span>
+        <span class="etiqueta etiqueta--cocina">${escaparHTML(receta.cocina)}</span>
+      </div>
       <h3>${escaparHTML(receta.nombre)}</h3>
       <p>${escaparHTML(receta.descripcion)}</p>
       <p class="tarjeta__meta">⏱ ${receta.tiempo} min · ${escaparHTML(receta.dificultad)}</p>
+      ${infoDespensa}
       ${conDetalle ? '<button type="button" class="btn btn--secundario btn--detalle" data-accion="detalle">Ver ingredientes y pasos</button>' : ""}
       <button type="button" class="btn btn--fav ${esFav ? "activo" : ""}"
               data-accion="favorito" aria-pressed="${esFav}">
@@ -99,10 +129,24 @@ async function iniciarInicio() {
 
     // Procesamiento: estadísticas calculadas con JavaScript
     document.getElementById("stat-total").textContent = recetas.length;
-    document.getElementById("stat-categorias").textContent =
-      new Set(recetas.map((r) => r.categoria)).size;
-    const rapidas = recetas.filter((r) => r.tiempo <= 20).length;
-    document.getElementById("stat-rapidas").textContent = rapidas;
+    document.getElementById("stat-cocinas").textContent = ChefFiltros.obtenerCocinas(recetas).length;
+    document.getElementById("stat-categorias").textContent = ChefFiltros.obtenerCategorias(recetas).length;
+    document.getElementById("stat-rapidas").textContent = recetas.filter((r) => r.tiempo <= 20).length;
+
+    // Explorar por cocina: un enlace por cocina, con su cantidad de recetas
+    const listaCocinas = document.getElementById("lista-cocinas");
+    listaCocinas.innerHTML = "";
+    ChefFiltros.obtenerCocinas(recetas).forEach((cocina) => {
+      const cantidad = recetas.filter((r) => r.cocina === cocina).length;
+      const enlace = document.createElement("a");
+      enlace.className = "chip-cocina";
+      enlace.href = "recetas.html?cocina=" + encodeURIComponent(cocina);
+      enlace.textContent = cocina + " ";
+      const numero = document.createElement("span");
+      numero.textContent = cantidad;
+      enlace.appendChild(numero);
+      listaCocinas.appendChild(enlace);
+    });
 
     // Destacadas: las recetas con estado "Popular"
     const destacadas = recetas.filter((r) => r.estado === "Popular").slice(0, 4);
@@ -128,8 +172,8 @@ async function iniciarInicio() {
       const r = recetas[Math.floor(Math.random() * recetas.length)];
       resultadoAzar.innerHTML = `
         <p>Hoy te sugerimos: <strong>${escaparHTML(r.nombre)}</strong>
-        (${r.tiempo} min, ${escaparHTML(r.dificultad)}).</p>
-        <a class="btn btn--secundario" href="recetas.html">Ver en el catálogo</a>`;
+        (cocina ${escaparHTML(r.cocina)}, ${r.tiempo} min, ${escaparHTML(r.dificultad)}).</p>
+        <a class="btn btn--secundario" href="recetas.html?cocina=${encodeURIComponent(r.cocina)}">Ver más de esta cocina</a>`;
     });
   } catch (error) {
     console.error(error);
@@ -139,7 +183,17 @@ async function iniciarInicio() {
   }
 }
 
-/* ---------- 4. ARRANQUE ---------- */
+/* ---------- 4. IMÁGENES: respaldo si una foto no existe ---------- */
+// Si una foto (.jpg, .png, .webp) no carga, se muestra la ilustración .svg del mismo nombre.
+// El evento "error" de las imágenes no sube por el DOM, por eso se escucha en fase de captura (true).
+document.addEventListener("error", (e) => {
+  const img = e.target;
+  if (img.tagName !== "IMG" || img.dataset.respaldo) return;
+  img.dataset.respaldo = "1"; // evita un bucle si tampoco existe el .svg
+  img.src = img.src.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, ".svg");
+}, true);
+
+/* ---------- 5. ARRANQUE ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   iniciarNavegacion();
   actualizarContadorFavoritos();

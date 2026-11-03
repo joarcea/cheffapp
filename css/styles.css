@@ -224,6 +224,44 @@ textarea { resize: vertical; }
 #modal-confirmar { width: min(420px, 92vw); }
 #modal-confirmar h2 { margin-top: 0; }
 
+/* ---------- 7d. Cocinas y despensa ---------- */
+input[type="checkbox"] { width: auto; }
+.etiqueta--cocina { background: #e0e7ff; color: #3730a3; }
+.chips-cocina { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+.chip-cocina {
+  display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none;
+  background: var(--color-superficie); border: 2px solid var(--color-borde); border-radius: 999px;
+  padding: 0.35rem 0.9rem; font-weight: 600; color: var(--color-texto);
+  transition: border-color 0.2s, background 0.2s;
+}
+.chip-cocina span { background: var(--color-secundario); color: #fff; border-radius: 999px; padding: 0 0.5rem; font-size: 0.8rem; }
+.chip-cocina:hover { border-color: var(--color-primario); background: #fdeee3; }
+
+.despensa { background: var(--color-superficie); border: 1px solid var(--color-borde);
+            border-radius: var(--radio); padding: 1rem 1.2rem; margin: 0 0 1.2rem; box-shadow: var(--sombra); }
+.despensa h2 { margin-bottom: 0.2rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; min-height: 2rem; }
+.chip {
+  background: var(--color-secundario); color: #fff; border: none; border-radius: 999px;
+  padding: 0.25rem 0.8rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.chip:hover { background: #1f3009; }
+.despensa__panel { margin: 0.5rem 0 1rem; }
+.despensa__panel summary { cursor: pointer; font-weight: 700; color: var(--color-primario-oscuro); margin-bottom: 0.6rem; }
+.despensa__lista { border: 1px solid var(--color-borde); border-radius: 8px; padding: 0.6rem; margin: 0; }
+.despensa__lista legend { font-size: 0.85rem; color: var(--color-texto-suave); padding: 0 0.4rem; }
+.ingredientes { list-style: none; margin: 0; padding: 0; max-height: 14rem; overflow-y: auto;
+                display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 0.2rem 0.6rem; }
+.ingredientes li[hidden] { display: none; }
+.ingrediente { display: flex; align-items: center; gap: 0.4rem; font-weight: 400; margin: 0;
+               padding: 0.25rem 0.3rem; border-radius: 6px; cursor: pointer; }
+.ingrediente:hover { background: #fdeee3; }
+.despensa__controles { display: grid; gap: 0.8rem; grid-template-columns: 1fr; align-items: end; }
+.despensa__controles .campo { margin-bottom: 0; }
+.despensa-info { font-size: 0.9rem; font-weight: 600; color: var(--color-aviso); background: #fffbeb;
+                 border-radius: 8px; padding: 0.3rem 0.6rem; margin: 0 0 0.5rem; }
+.despensa-info--ok { color: var(--color-exito); background: #dcfce7; }
+
 /* ---------- 8. Footer ---------- */
 .pie { background: #1f2933; color: #e5e7eb; padding: 1.5rem 0; text-align: center; margin-top: 2rem; }
 .pie a { color: #fdba74; }
@@ -235,6 +273,7 @@ textarea { resize: vertical; }
   .filtros { grid-template-columns: repeat(2, 1fr); }
   .campo--buscar { grid-column: 1 / -1; }
   .estadisticas--4 { grid-template-columns: repeat(4, 1fr); }
+  .despensa__controles { grid-template-columns: 1fr auto; }
   .hero h1 { font-size: 2.8rem; }
 }
 /* Escritorio */
