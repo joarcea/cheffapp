@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestiona tus recetas favoritas y agrega tus propias recetas en ChefApp.">
+  <title>ChefApp | Mis favoritos</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="encabezado">
+    <div class="contenedor encabezado__barra">
+      <a href="index.html" class="logo">
+        <img src="assets/imagenes/gallo-pinto.svg" alt="Logo de ChefApp">
+        ChefApp
+      </a>
+      <button type="button" id="menu-boton" class="menu-boton"
+              aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="menu-principal">☰</button>
+      <nav aria-label="Navegación principal" class="nav-envoltorio">
+        <ul id="menu-principal" class="menu">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="recetas.html">Recetas</a></li>
+          <li><a href="favoritos.html" aria-current="page" class="activo">Mis favoritos <span class="insignia" id="contador-favoritos">0</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor seccion">
+    <h1>Mi recetario</h1>
+    <p class="seccion__intro">
+      Aquí gestionas lo que guardaste: marca las recetas que ya probaste, quita las que no te interesan
+      y agrega tus propias recetas. Todo se conserva en tu navegador.
+    </p>
+
+    <!-- RESUMEN CALCULADO -->
+    <section aria-label="Resumen de tu recetario">
+      <div class="estadisticas estadisticas--4">
+        <div class="estadistica"><strong id="stat-favoritos">0</strong> favoritos</div>
+        <div class="estadistica"><strong id="stat-probadas">0</strong> probadas</div>
+        <div class="estadistica"><strong id="stat-propias">0</strong> recetas propias</div>
+        <div class="estadistica"><strong id="stat-promedio">–</strong> tiempo promedio</div>
+      </div>
+    </section>
+
+    <div class="gestion">
+      <!-- FORMULARIO -->
+      <section class="panel" aria-labelledby="titulo-form">
+        <h2 id="titulo-form">Agregar mi receta</h2>
+        <p class="seccion__intro">Los campos con * son obligatorios.</p>
+
+        <form id="formulario-receta" novalidate>
+          <div id="resumen-errores" class="mensaje mensaje--error" role="alert" hidden></div>
+
+          <div class="campo">
+            <label for="nombre">Nombre de la receta *</label>
+            <input type="text" id="nombre" name="nombre" maxlength="60" required aria-required="true"
+                   aria-describedby="error-nombre" placeholder="Ej: Sándwich de huevo" autocomplete="off">
+            <p class="campo__error" id="error-nombre"></p>
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoría *</label>
+            <select id="categoria" name="categoria" required aria-required="true" aria-describedby="error-categoria">
+              <option value="">Selecciona una categoría</option>
+            </select>
+            <p class="campo__error" id="error-categoria"></p>
+          </div>
+
+          <div class="campo-doble">
+            <div class="campo">
+              <label for="dificultad">Dificultad *</label>
+              <select id="dificultad" name="dificultad" required aria-required="true" aria-describedby="error-dificultad">
+                <option value="">Selecciona…</option>
+                <option value="Fácil">Fácil</option>
+                <option value="Media">Media</option>
+                <option value="Difícil">Difícil</option>
+              </select>
+              <p class="campo__error" id="error-dificultad"></p>
+            </div>
+            <div class="campo">
+              <label for="tiempo">Tiempo (minutos) *</label>
+              <input type="number" id="tiempo" name="tiempo" min="1" max="600" step="1" required
+                     aria-required="true" aria-describedby="error-tiempo" inputmode="numeric" placeholder="Ej: 20">
+              <p class="campo__error" id="error-tiempo"></p>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="descripcion">Descripción corta *</label>
+            <textarea id="descripcion" name="descripcion" rows="3" maxlength="200" required aria-required="true"
+                      aria-describedby="error-descripcion contador" placeholder="Ej: Desayuno rápido con huevo y pan tostado."></textarea>
+            <p class="campo__ayuda" id="contador">0 / 200</p>
+            <p class="campo__error" id="error-descripcion"></p>
+          </div>
+
+          <div class="campo">
+            <label for="ingredientes">Ingredientes *</label>
+            <textarea id="ingredientes" name="ingredientes" rows="4" required aria-required="true"
+                      aria-describedby="ayuda-ingredientes error-ingredientes"
+                      placeholder="2 huevos&#10;2 rebanadas de pan&#10;Sal"></textarea>
+            <p class="campo__ayuda" id="ayuda-ingredientes">Escribe un ingrediente por línea (mínimo 2).</p>
+            <p class="campo__error" id="error-ingredientes"></p>
+          </div>
+
+          <div class="campo">
+            <label for="pasos">Pasos de preparación *</label>
+            <textarea id="pasos" name="pasos" rows="4" required aria-required="true"
+                      aria-describedby="ayuda-pasos error-pasos"
+                      placeholder="Cocina los huevos.&#10;Tuesta el pan.&#10;Arma el sándwich."></textarea>
+            <p class="campo__ayuda" id="ayuda-pasos">Escribe un paso por línea (mínimo 2).</p>
+            <p class="campo__error" id="error-pasos"></p>
+          </div>
+
+          <div class="acciones-form">
+            <button type="submit" class="btn">Guardar receta</button>
+            <button type="button" id="btn-limpiar-form" class="btn btn--secundario">Limpiar formulario</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- LISTADOS -->
+      <div class="gestion__listas">
+        <section aria-labelledby="titulo-favoritos">
+          <div class="seccion__cabecera">
+            <h2 id="titulo-favoritos">Mis favoritos</h2>
+            <button type="button" id="btn-vaciar-favoritos" class="btn btn--secundario btn--chico">Vaciar favoritos</button>
+          </div>
+          <div id="lista-favoritos" class="rejilla" aria-live="polite"></div>
+        </section>
+
+        <section aria-labelledby="titulo-propias">
+          <div class="seccion__cabecera">
+            <h2 id="titulo-propias">Mis recetas</h2>
+            <button type="button" id="btn-borrar-propias" class="btn btn--secundario btn--chico">Borrar todas mis recetas</button>
+          </div>
+          <div id="lista-propias" class="rejilla" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- CONFIRMACIÓN (dialog nativo; los botones con value cierran y devuelven su valor) -->
+  <dialog id="modal-confirmar" aria-labelledby="confirmar-titulo" aria-describedby="confirmar-mensaje">
+    <form method="dialog">
+      <h2 id="confirmar-titulo">Confirmar</h2>
+      <p id="confirmar-mensaje"></p>
+      <div class="acciones-form">
+        <button type="submit" value="no" class="btn btn--secundario">Cancelar</button>
+        <button type="submit" value="si" class="btn btn--peligro">Sí, continuar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>© 2026 ChefApp · Proyecto ISW-521 · Universidad Técnica Nacional · Eduardo Arce</p>
+    </div>
+  </footer>
+
+  <!-- Orden: storage → app → filtros → favoritos -->
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/filtros.js"></script>
+  <script src="js/favoritos.js"></script>
+</body>
+</html>
