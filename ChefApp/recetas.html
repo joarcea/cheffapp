@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo de recetas de ChefApp con búsqueda instantánea y filtros.">
+  <title>ChefApp | Recetas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="encabezado">
+    <div class="contenedor encabezado__barra">
+      <a href="index.html" class="logo">
+        <img src="assets/imagenes/gallo-pinto.svg" alt="Logo de ChefApp">
+        ChefApp
+      </a>
+      <button type="button" id="menu-boton" class="menu-boton"
+              aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="menu-principal">☰</button>
+      <nav aria-label="Navegación principal" class="nav-envoltorio">
+        <ul id="menu-principal" class="menu">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="recetas.html" aria-current="page" class="activo">Recetas</a></li>
+          <li><a href="favoritos.html">Mis favoritos <span class="insignia" id="contador-favoritos">0</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor seccion">
+    <h1>Catálogo de recetas</h1>
+    <p class="seccion__intro">
+      <strong>Paso 1:</strong> busca o filtra. <strong>Paso 2:</strong> abre una receta para ver los pasos.
+      <strong>Paso 3:</strong> guárdala en favoritos.
+    </p>
+
+    <!-- BÚSQUEDA Y FILTROS -->
+    <section class="filtros" aria-labelledby="titulo-filtros">
+      <h2 id="titulo-filtros" class="visualmente-oculto">Búsqueda y filtros</h2>
+
+      <div class="campo campo--buscar">
+        <label for="buscar">Buscar por nombre o ingrediente</label>
+        <input type="search" id="buscar" placeholder="Ej: pollo, arroz, tomate…" autocomplete="off">
+      </div>
+
+      <div class="campo">
+        <label for="filtro-categoria">Categoría</label>
+        <select id="filtro-categoria">
+          <option value="">Todas</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="filtro-dificultad">Dificultad</label>
+        <select id="filtro-dificultad">
+          <option value="">Todas</option>
+          <option value="Fácil">Fácil</option>
+          <option value="Media">Media</option>
+          <option value="Difícil">Difícil</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="filtro-tiempo">Tiempo de preparación</label>
+        <select id="filtro-tiempo">
+          <option value="todos">Cualquiera</option>
+          <option value="rapido">Rápido (15 min o menos)</option>
+          <option value="medio">Medio (16 a 30 min)</option>
+          <option value="largo">Largo (más de 30 min)</option>
+        </select>
+      </div>
+
+      <div class="campo campo--accion">
+        <button type="button" id="btn-limpiar-filtros" class="btn btn--secundario">Limpiar filtros</button>
+      </div>
+    </section>
+
+    <!-- RESUMEN DINÁMICO + RESULTADOS -->
+    <p id="resumen" class="resumen" aria-live="polite">Cargando…</p>
+    <section aria-label="Resultados">
+      <div id="lista-recetas" class="rejilla"></div>
+    </section>
+  </main>
+
+  <!-- DETALLE DE RECETA (elemento nativo <dialog>) -->
+  <dialog id="modal-detalle" aria-labelledby="modal-titulo">
+    <button type="button" id="modal-cerrar" class="modal__cerrar" aria-label="Cerrar detalle">✕</button>
+    <div id="modal-contenido"></div>
+  </dialog>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>© 2026 ChefApp · Proyecto ISW-521 · Universidad Técnica Nacional · Eduardo Arce</p>
+    </div>
+  </footer>
+
+  <!-- Orden: storage → app → filtros → recetas -->
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/filtros.js"></script>
+  <script src="js/recetas.js"></script>
+</body>
+</html>
